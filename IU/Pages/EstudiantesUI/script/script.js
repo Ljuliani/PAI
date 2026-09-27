@@ -1,53 +1,83 @@
-document.addEventListener("DOMContentLoaded", function () {
-    const turnoSelect = document.getElementById("turno");
-    const carreraSelect = document.getElementById("carrera");
+document.addEventListener("DOMContentLoaded", () => {
+    const form = document.getElementById("formInscripcion");
+    const paisSelect = document.getElementById("pais");
+    const submitButton = document.getElementById("enviar");
+    const message = document.getElementById("mensaje");
 
-    const carrerasPorTurno = {
-        manana: ["Profesorado de Matemática"],
-        tarde: ["Profesorado de Física"],
-        vespertino: [
-            "Profesorado de Economía",
-            "Profesorado de Electromecánica",
-            "Profesorado de Electrónica (Pendiente de Aprobación por la DGCyE)",
-            "Profesorado de Matemática",
-            "Tecnicatura Superior en Análisis de Sistemas",
-            "Tecnicatura Superior en Bibliotecología",
-            "Tecnicatura Superior en Bibliotecología de Instituciones Educativas (BIE) – Pendiente de aprobación por la DGCyE",
-            "Tecnicatura Superior en Mantenimiento Industrial (Sólo 2° y 3° Año)"
-        ]
-    };
+    async function cargarPaises() {
+        paisSelect.disabled = true;
+        submitButton.disabled = true;
+        paisSelect.replaceChildren(new Option("Cargando países...", ""));
 
-    turnoSelect.addEventListener("change", function () {
-        const turno = turnoSelect.value;
+        try {
+            const response = await fetch("/api/paises");
+            if (!response.ok) {
+                throw new Error("No se pudo recuperar el listado de países.");
+            }
 
-        // Limpiamos el select y creamos la opción deshabilitada
-        carreraSelect.innerHTML = "";
-        const defaultOption = document.createElement("option");
-        defaultOption.value = "";
-        defaultOption.textContent = "Seleccioná una carrera.";
-        defaultOption.disabled = true;
-        defaultOption.selected = true;
-        carreraSelect.appendChild(defaultOption);
+            const paises = await response.json();
+            paisSelect.replaceChildren(new Option(
+                paises.length ? "Seleccioná un país." : "No hay países cargados.",
+                ""
+            ));
 
-        // Si hay un turno válido, agregamos las carreras correspondientes
-        if (turno && carrerasPorTurno[turno]) {
-            carrerasPorTurno[turno].forEach(carrera => {
-                const option = document.createElement("option");
-                option.value = carrera;
-                option.textContent = carrera;
-                carreraSelect.appendChild(option);
+            for (const pais of paises) {
+                paisSelect.add(new Option(pais.nombre, pais.id));
+            }
+
+            paisSelect.disabled = paises.length === 0;
+            submitButton.disabled = paises.length === 0;
+            message.textContent = paises.length
+                ? ""
+                : "El administrador debe cargar al menos un país antes del alta.";
+        } catch (error) {
+            paisSelect.replaceChildren(new Option("No se pudo cargar el listado.", ""));
+            message.textContent = error.message;
+        }
+    }
+
+    form.addEventListener("submit", async (event) => {
+        event.preventDefault();
+        if (!form.reportValidity()) {
+            return;
+        }
+
+        submitButton.disabled = true;
+        message.textContent = "Guardando estudiante...";
+
+        const formData = new FormData(form);
+        const solicitud = {
+            dni: Number(formData.get("dni")),
+            apellidosYNombres: formData.get("apellidosynombres").trim(),
+            fechaNacimiento: formData.get("fechaNac"),
+            correo: formData.get("correo").trim(),
+            domicilio: formData.get("domicilio").trim(),
+            telefono: formData.get("telefono").trim(),
+            fechaEgresoSecundario: formData.get("fechaEgre") || null,
+            tituloSecundario: formData.get("tituloSec").trim(),
+            paisId: Number(formData.get("paisId"))
+        };
+
+        try {
+            const response = await fetch("/api/estudiantes", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(solicitud)
             });
+            const result = await response.json();
+            if (!response.ok) {
+                throw new Error(result.message || result.title || "No se pudo guardar el estudiante.");
+            }
+
+            message.textContent = `Estudiante guardado. ID: ${result.idEstudiante}.`;
+            form.reset();
+            await cargarPaises();
+        } catch (error) {
+            message.textContent = error.message;
+            submitButton.disabled = paisSelect.options.length < 2;
         }
     });
 
-    const formInscripcion = document.getElementById("formInscripcion");
-
-    formInscripcion.addEventListener("submit", function (e) {
-        e.preventDefault();
-
-        if (formInscripcion.checkValidity()) {
-            alert("✅ Formulario completado con éxito.\n\n📧 Se ha enviado una copia a su correo electrónico.\n\n🤝 ¡Muchas gracias por inscribirte!");
-            formInscripcion.reset();
-        } 
-    });
+    window.addEventListener("focus", cargarPaises);
+    cargarPaises();
 });

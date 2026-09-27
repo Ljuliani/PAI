@@ -4,101 +4,67 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Formulario de Inscripción 2026</title>
+        <title>Alta de estudiante</title>
         <link rel="stylesheet" href="css/style.css">
     </head>
     <body>
         <div class="form-container">
             <img src="Imagenes/banner.jpg" alt="Banner principal" class="banner">
-            <h1>Formulario de Inscripción</h1>
-            <h1>2026</h1>
+            <h1>Alta de estudiante</h1>
             <hr>
-            <p class="instruccion"><strong>Completá todos los campos solicitados.</strong></p>
+            <p class="instruccion"><strong>Completá los datos para registrar al estudiante.</strong></p>
             <form id="formInscripcion">
 
                 <!-- 🧍 Datos personales -->
-                <h3>🧍 Datos personales</h3>
+                <h3>Datos personales</h3>
 
                 <hr>
 
                 <label for="dni">&#9679; DNI: (Documento Nacional de Identidad)</label>
-                <input type="text" id="dni" name="dni" placeholder="01.234.567" required>
+                <input type="number" id="dni" name="dni" min="1" step="1" max="2147483647" placeholder="12345678" required>
 
                 <label for="apellidosynombres">&#9679; Apellidos y Nombres:</label>
-                <input type="text" id="apellidosynombres" name="apellidosynombres" placeholder="Túpac Amaru, José Gabriel" required>
+                <input type="text" id="apellidosynombres" name="apellidosynombres" maxlength="200" placeholder="Túpac Amaru, José Gabriel" required>
 
                 <label for="fechaNac">&#9679; Fecha de nacimiento:</label>
                 <input type="date" id="fechaNac" name="fechaNac" required>
 
-                <label for="edadFecha">&#9679; Edad al 30/06/2026:</label>
-                <input type="text" id="edadFecha" name="edadFecha" placeholder="00" required>
-
-
-
                 <!-- 📱 Contacto -->
-                <h3>📱 Contacto</h3>
+                <h3>Contacto</h3>
 
                 <hr>
 
                 <label for="correo">&#9679; Correo electrónico:</label>
-                <input type="email" id="correo" name="correo" placeholder="estudiante@mail.com" required>
+                <input type="email" id="correo" name="correo" maxlength="50" placeholder="estudiante@mail.com" required>
 
                 <label for="domicilio">&#9679; Domicilio: (Calle - Número - Localidad - Partido)</label>
-                <input type="text" id="domicilio" name="domicilio" placeholder="Bartolomé Mitre, 5035, Villa Ballester, Provincia de Buenos Aires." required>
+                <input type="text" id="domicilio" name="domicilio" maxlength="80" placeholder="Bartolomé Mitre 5035, Villa Ballester" required>
 
                 <label for="telefono">&#9679; Número de teléfono:</label>
-                <input type="tel" id="telefono" name="telefono" placeholder="11-2345-6789" required>
+                <input type="tel" id="telefono" name="telefono" maxlength="20" placeholder="11-2345-6789" required>
 
                 <!-- 🎓 Información Académica -->
-                <h3>🎓 Información Académica</h3>
+                <h3>Información académica</h3>
                 
                 <hr>
                 
                 <label for="fechaEgre">&#9679; Fecha de egreso del nivel Secundario: (De corresponder)</label>
-                <input type="date" id="fechaEgre" name="fechaEgre" required>
-
-                <label>&#9679; Indicar si posees...</label>
-                <div class="checkbox-group">
-                    <label><input type="checkbox" name="titulo" value="titulo"> Título</label>
-                    <label><input type="checkbox" name="tituloEnTramite" value="titulo en tramite"> Título en trámite</label>
-                    <label><input type="checkbox" name="materiasAdeudadas" value="Constancia de materias adeudadas"> Constancia de materias adeudadas</label>
-                    <label><input type="checkbox" name="alumnoRegular" value="Constancia Alumno regular"> Constancia de alumno regular (Si estás cursando el último año)</label><br>
-                </div>
+                <input type="date" id="fechaEgre" name="fechaEgre">
 
                 <label for="tituloSec">&#9679; Título Secundario: (Nombre del título obtenido o a obtener)</label>
-                <input type="text" id="tituloSec" name="tituloSec" placeholder="Escribí el nombre del título." required>
+                <input type="text" id="tituloSec" name="tituloSec" maxlength="50" placeholder="Escribí el nombre del título." required>
 
-                <!-- ✒️ Inscripción -->
-                <h3>✒️ Inscripción</h3>
-                
-                <hr>
-                
-                <label for="turno">&#9679; Turno en el que vas a cursar:</label>
-                <select id="turno" name="turno" required>
-                    <option value="" disabled selected>Seleccioná un turno.</option>
-                    <option value="manana">Mañana</option> 
-                    <option value="tarde">Tarde</option>
-                    <option value="vespertino">Vespertino</option>
+                <label for="pais">&#9679; País:</label>
+                <select id="pais" name="paisId" required disabled>
+                    <option value="" selected>Buscando países...</option>
                 </select>
 
-                <label for="carrera">&#9679; Carrera en la que te vas a inscribir:</label>
-                <select id="carrera" name="carrera" required>
-                    <option value="" disabled selected>Seleccioná una carrera.</option>
-                </select>
-
-                <br><br>
-                
-                <button type="submit">¡Inscribirme!</button>
-                
-                <br><br><br>
+                <p id="mensaje" role="status" aria-live="polite"></p>
+                <button id="enviar" type="submit" disabled>Registrar estudiante</button>
             </form>
             <hr>
             <footer>
-                <p>
-                    <a href="/UI/-/agradecimientos.html" title="Ver agradecimientos" style="text-decoration: none;">
-                        Creado por los alumnos de Tercer año de la TSAS en el 2025.
-                    </a>
-                </p>
+                <p><a href="/paises/" title="Administración de países">Administración de países</a></p>
             </footer>
         </div>
         <script src="script/script.js"></script>

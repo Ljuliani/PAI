@@ -73,6 +73,16 @@ button:hover {
     background-color: #155ab6;
 }
 
+button:disabled {
+    background-color: #9aa0a6;
+    cursor: not-allowed;
+}
+
+#mensaje {
+    min-height: 1.5em;
+    margin: 0 0 16px;
+}
+
 /* Responsivo */
 @media (max-width: 768px) {
     body {

@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="es">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Administración de países</title>
+        <link rel="stylesheet" href="/estudiantes/css/style.css">
+    </head>
+    <body>
+        <main class="form-container">
+            <h1>Administración de países</h1>
+            <p>Ingresá los datos del país para habilitarlo en el formulario de estudiantes.</p>
+
+            <form id="formPais">
+                <label for="idPais">Código de país (ID_PAIS):</label>
+                <input type="number" id="idPais" name="id" min="1" step="1" max="2147483647" required>
+
+                <label for="nombrePais">Nombre del país:</label>
+                <input type="text" id="nombrePais" name="nombre" maxlength="50" required>
+
+                <p id="mensaje" role="status" aria-live="polite"></p>
+                <button id="guardarPais" type="submit">Guardar país</button>
+            </form>
+
+            <hr>
+            <h2>Países cargados</h2>
+            <ul id="listaPaises" aria-live="polite"></ul>
+            <p><a href="/estudiantes/">Ir al formulario de estudiantes</a></p>
+        </main>
+        <script src="script/script.js"></script>
+    </body>
+</html>
