@@ -13,6 +13,7 @@
             <h1>Alta de estudiante</h1>
             <hr>
             <p class="instruccion"><strong>Completá los datos para registrar al estudiante.</strong></p>
+            <p id="estadoFormulario" role="status" aria-live="polite">Verificando vigencia del formulario...</p>
             <form id="formInscripcion">
 
                 <!-- 🧍 Datos personales -->
@@ -43,28 +44,56 @@
                 <label for="telefono">&#9679; Número de teléfono:</label>
                 <input type="tel" id="telefono" name="telefono" maxlength="20" placeholder="11-2345-6789" required>
 
-                <!-- 🎓 Información Académica -->
-                <h3>Información académica</h3>
-                
-                <hr>
-                
-                <label for="fechaEgre">&#9679; Fecha de egreso del nivel Secundario: (De corresponder)</label>
-                <input type="date" id="fechaEgre" name="fechaEgre">
+                <section class="form-section" aria-labelledby="informacionAcademicaTitulo">
+                    <div class="form-section__header">
+                        <h2 id="informacionAcademicaTitulo">Información académica</h2>
+                        <p>Completá los datos de tus estudios secundarios.</p>
+                    </div>
 
-                <label for="tituloSec">&#9679; Título Secundario: (Nombre del título obtenido o a obtener)</label>
-                <input type="text" id="tituloSec" name="tituloSec" maxlength="50" placeholder="Escribí el nombre del título." required>
+                    <div class="form-grid">
+                        <div class="form-field">
+                            <label for="tituloSec">Título secundario</label>
+                            <input
+                                type="text"
+                                id="tituloSec"
+                                name="tituloSec"
+                                maxlength="50"
+                                placeholder="Nombre del título obtenido o a obtener"
+                                required>
+                        </div>
+
+                        <div class="form-field">
+                            <label for="fechaEgre">Fecha de egreso</label>
+                            <input type="date" id="fechaEgre" name="fechaEgre">
+                            <small>Si todavía no egresaste, podés dejar este dato vacío.</small>
+                        </div>
+                    </div>
+                </section>
 
                 <label for="pais">&#9679; País:</label>
                 <select id="pais" name="paisId" required disabled>
                     <option value="" selected>Buscando países...</option>
                 </select>
 
+                <label for="carrera">&#9679; Carrera:</label>
+                <select id="carrera" name="carreraId" required disabled>
+                    <option value="" selected>Buscando carreras...</option>
+                </select>
+
+                <fieldset class="academic-options">
+                    <legend>Documentación académica que posee</legend>
+                    <p>Seleccioná al menos una opción.</p>
+                    <div id="informacionAcademica" aria-live="polite">
+                        <p>Cargando opciones académicas...</p>
+                    </div>
+                </fieldset>
+
                 <p id="mensaje" role="status" aria-live="polite"></p>
                 <button id="enviar" type="submit" disabled>Registrar estudiante</button>
             </form>
             <hr>
             <footer>
-                <p><a href="/paises/" title="Administración de países">Administración de países</a></p>
+                <p><a href="/administracion/" title="Administración">Administración</a></p>
             </footer>
         </div>
         <script src="script/script.js"></script>

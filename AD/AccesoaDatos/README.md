@@ -1,22 +1,24 @@
 # Acceso a datos
 
-La persistencia usa Dapper como micro-ORM y SQL Server/Azure SQL como motor. La base y las tablas se crean por separado con el script SQL de la arquitectura de datos; Dapper no crea ni modifica el esquema. El repositorio de estudiantes ejecuta el procedimiento almacenado `dbo.Estudiantes_Insert`. La cadena de conexión se inyecta desde el host; no debe guardarse en el repositorio ni en archivos versionados.
+La persistencia de estudiantes y países usa Dapper como micro-ORM sobre SQL Server/Azure SQL. La capa de acceso a datos no crea ni modifica el esquema: delega las escrituras en procedimientos almacenados ya existentes y mapea los resultados devueltos por la base a objetos del dominio.
 
-Las bibliotecas `RN/Estudiantes`, `RN/Países` y `RN/Carreras` mantienen separados sus modelos. La tabla `Pais` usa `ID_PAIS INT PRIMARY KEY` sin `IDENTITY`; los códigos los define la carga/administración del catálogo, no Dapper. El alta de estudiante recibe ese `PaisId`; el procedimiento valida que exista y resuelve la unicidad compuesta DNI-correo. El servicio retorna el `ID_Est` generado o existente por ese procedimiento.
+En el alcance actual, los objetos que se persisten son `Estudiante` y `Pais`. Sus repositorios no contienen sentencias directas `INSERT`, `UPDATE` o `DELETE`; delegan las escrituras en procedimientos almacenados existentes. No se crean tablas desde AD.
 
-La definición vigente del país es:
+- `dbo.Estudiantes_Insert` para crear o recuperar un estudiante y devolver el `ID_Est`.
+- `dbo.Pais_listados` para listar países.
+- `dbo.Pais_Insert` para registrar un país.
 
-```sql
-CREATE TABLE Pais (
-    ID_PAIS INT PRIMARY KEY,
-    Pais_Nombre VARCHAR(50) UNIQUE NOT NULL
-);
-```
+El formulario carga carreras desde `dbo.Carreras` y opciones académicas habilitadas desde `dbo.Inf_Academica`. El alta crea o recupera al estudiante, ejecuta `dbo.Agregar_Inscripcion` y registra las opciones seleccionadas mediante `dbo.Inf_Academica_Est_Insert`, dentro de una transacción. Solo acepta una habilitación cuyas fechas incluyan el día actual; la selección académica debe seguir habilitada al guardar.
 
-1. Crear la base y las tablas con el script SQL de la arquitectura de datos.
-2. Ejecutar `Database/Estudiantes_Insert.sql` contra esa base para instalar o actualizar el procedimiento almacenado.
-3. Proveer la cadena de conexión mediante la configuración segura del entorno de ejecución (por ejemplo, secretos del proveedor de nube o variables de entorno).
-4. Registrar las capas en el host:
+La capa de administración delega las escrituras en procedimientos existentes para el inicio de sesión (`dbo.Logueo_Admin`), el mantenimiento de habilitaciones y de información académica. Los países, las habilitaciones y las opciones académicas se leen con consultas parametrizadas porque la base configurada no tiene procedimientos de listado disponibles para esas entidades. La exportación consulta las tablas existentes directamente y genera un archivo `.xlsx` en la API, sin dependencia de servicios CDN del navegador. El cambio de habilitación solo actualiza fechas, conforme a la firma de `sp_Update_Habilitacion_Formulario` compartida; la inscripción está abierta si la fecha actual está dentro de una única ventana de fechas. No se crea ni modifica el esquema desde esta aplicación.
+
+La exportación usa las columnas que devuelve `dbo.SP_ExportacionDelExcel`. El procedimiento compartido no devuelve una fecha de inscripción, por lo que no se inventa ese dato; las opciones `Posee` asociadas a una misma inscripción se agrupan en el objeto exportado.
+
+La cadena de conexión se inyecta desde el host; no debe guardarse en el repositorio ni en archivos versionados.
+
+1. Configurar la base de datos y los procedimientos almacenados fuera de esta capa; AD asume que ya están creados.
+2. Proveer la cadena de conexión mediante la configuración segura del entorno de ejecución (por ejemplo, secretos del proveedor de nube o variables de entorno).
+3. Registrar las capas en el host:
 
 ```csharp
 services.AddServicios();
@@ -35,6 +37,6 @@ dotnet run --project IU/Api/Api.csproj
 
 Reemplazá el texto entre `<...>` por la cadena completa en tu terminal local. No la agregues a este README, a `appsettings.json` ni a Git. La variable de entorno equivalente es `ConnectionStrings__Sql`.
 
-La pantalla de administración de países queda en `/paises/`; el formulario de estudiantes, en `/estudiantes/`. La API ofrece `GET/POST /api/paises` y `POST /api/estudiantes`. Las pantallas se sirven desde el mismo origen que la API, por lo que no requieren configuración CORS.
+La administración queda en `/administracion/`; el formulario de estudiantes, en `/estudiantes/`, y la pantalla de países, en `/paises/`. La API expone, entre otras, `GET /api/carreras`, `GET /api/informacion-academica`, `POST /api/estudiantes`, `GET /api/formulario/disponibilidad` y rutas `/api/admin/*` protegidas con una cookie de sesión obtenida a través de `dbo.Logueo_Admin`. Las pantallas se sirven desde el mismo origen que la API, por lo que no requieren configuración CORS.
 
-La pantalla de países es una interfaz administrativa, pero todavía no tiene autenticación/autorización de usuarios. No publiques el endpoint de alta de países en producción hasta protegerlo con el mecanismo de identidad y permisos elegido para el despliegue.
+El alta de países (`POST /api/paises`) también requiere la sesión administrativa.

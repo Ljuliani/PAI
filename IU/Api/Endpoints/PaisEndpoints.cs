@@ -35,7 +35,7 @@ public static class PaisEndpoints
                     .LogInformation(exception, "Se intentó registrar un país con un código o nombre existente.");
                 return Results.Conflict(new { message = "Ya existe un país con ese código o nombre." });
             }
-        });
+        }).RequireAuthorization();
 
         return endpoints;
     }

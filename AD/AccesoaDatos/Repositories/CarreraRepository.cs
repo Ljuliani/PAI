@@ -1,11 +1,27 @@
 using AccesoaDatos.Infrastructure;
 using Carreras.Application;
 using Carreras.Domain;
+using Dapper;
 
 namespace AccesoaDatos.Repositories;
 
 public sealed class CarreraRepository(IDbConnectionFactory connectionFactory) : ICarreraRepository
 {
+    public async Task<IReadOnlyList<Carrera>> ListarAsync(CancellationToken cancellationToken = default)
+    {
+        const string sql = """
+            SELECT ID_Car AS Id, Car_Nom AS Nombre, Turno
+            FROM dbo.Carreras
+            ORDER BY Car_Nom;
+            """;
+
+        await using var connection = await connectionFactory.OpenConnectionAsync(cancellationToken);
+        var command = new CommandDefinition(sql, cancellationToken: cancellationToken);
+        var rows = await connection.QueryAsync<CarreraRow>(command);
+
+        return rows.Select(Map).ToList();
+    }
+
     public async Task<Carrera?> ObtenerPorIdAsync(int id, CancellationToken cancellationToken = default)
     {
         const string sql = """
@@ -66,12 +82,30 @@ public sealed class CarreraRepository(IDbConnectionFactory connectionFactory) : 
         {
             Id = reader.GetInt32(0),
             Nombre = reader.GetString(1),
-            Turno = reader.GetString(2) switch
-            {
-                "Mañana" => Turno.Manana,
-                "Tarde" => Turno.Tarde,
-                "Vespertino" => Turno.Vespertino,
-                var value => throw new InvalidOperationException($"El turno '{value}' almacenado en Carreras no es válido.")
-            }
+            Turno = MapTurno(reader.GetString(2))
         };
+
+    private static Carrera Map(CarreraRow row) =>
+        new()
+        {
+            Id = row.Id,
+            Nombre = row.Nombre,
+            Turno = MapTurno(row.Turno)
+        };
+
+    private static Turno MapTurno(string value) =>
+        value switch
+        {
+            "Mañana" or "MAÑANA" => Turno.Manana,
+            "Tarde" or "TARDE" => Turno.Tarde,
+            "Vespertino" or "VESPERTINO" => Turno.Vespertino,
+            _ => throw new InvalidOperationException($"El turno '{value}' almacenado en Carreras no es válido.")
+        };
+
+    private sealed class CarreraRow
+    {
+        public int Id { get; set; }
+        public string Nombre { get; set; } = string.Empty;
+        public string Turno { get; set; } = string.Empty;
+    }
 }

@@ -13,6 +13,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="../../RN/Administracion/Administracion.csproj" />
     <ProjectReference Include="../../RN/Estudiantes/Estudiantes.csproj" />
     <ProjectReference Include="../../RN/Carreras/Carreras.csproj" />
     <ProjectReference Include="../../RN/Países/Países.csproj" />

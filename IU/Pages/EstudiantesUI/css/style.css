@@ -7,6 +7,37 @@ body {
     margin: 0;
 }
 
+.academic-options {
+    margin: 24px 0;
+    padding: 18px;
+    border: 1px solid #dce3ef;
+    border-radius: 10px;
+    background: #fbfcff;
+}
+
+.academic-options legend {
+    padding: 0 6px;
+    color: #123474;
+    font-weight: 600;
+}
+
+.academic-options p {
+    margin: 6px 0 14px;
+    text-align: left;
+}
+
+.academic-options label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 8px 0;
+}
+
+.academic-options input[type="checkbox"] {
+    width: auto;
+    margin: 0;
+}
+
 .form-container {
     background-color: #ffffff;
     border-radius: 10px;
@@ -58,6 +89,50 @@ input, select {
     box-sizing: border-box;
 }
 
+.form-section {
+    margin: 28px 0;
+    padding: 24px;
+    border: 1px solid #e1e7f0;
+    border-radius: 12px;
+    background: #f8faff;
+}
+
+.form-section__header {
+    margin-bottom: 20px;
+}
+
+.form-section__header h2 {
+    margin: 0 0 6px;
+    color: #123474;
+    text-align: left;
+}
+
+.form-section__header p {
+    margin: 0;
+    color: #5f6b7a;
+    text-align: left;
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 20px;
+}
+
+.form-field {
+    min-width: 0;
+}
+
+.form-field input {
+    margin-bottom: 8px;
+}
+
+.form-field small {
+    display: block;
+    color: #5f6b7a;
+    line-height: 1.4;
+}
+
 button {
     background-color: #1a73e8;
     color: white;
@@ -90,6 +165,13 @@ button:disabled {
     }
     .form-container {
         padding: 25px 20px;
+    }
+    .form-section {
+        padding: 18px;
+    }
+    .form-grid {
+        grid-template-columns: 1fr;
+        gap: 12px;
     }
     h2 {
         font-size: 20px;

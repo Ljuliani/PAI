@@ -11,6 +11,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="../Administracion/Administracion.csproj" />
     <ProjectReference Include="../Estudiantes/Estudiantes.csproj" />
     <ProjectReference Include="../Carreras/Carreras.csproj" />
     <ProjectReference Include="../Países/Países.csproj" />

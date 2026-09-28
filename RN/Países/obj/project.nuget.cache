@@ -1,10 +1,10 @@
 {
   "version": 2,
-  "dgSpecHash": "iWMt1cEOlMY=",
+  "dgSpecHash": "eizNPWXQeNQ=",
   "success": true,
-  "projectFilePath": "/home/luciano/Documentos/Algoritmos III/PAI/RN/Países/Países.csproj",
+  "projectFilePath": "C:\\Users\\lucho\\OneDrive\\Documentos\\TESAS\\TESAS 3° Año\\Algoritmos y estructuras de datos III\\PAI\\RN\\Países\\Países.csproj",
   "expectedPackageFiles": [
-    "/home/luciano/.nuget/packages/microsoft.extensions.dependencyinjection.abstractions/10.0.0/microsoft.extensions.dependencyinjection.abstractions.10.0.0.nupkg.sha512"
+    "C:\\Users\\lucho\\.nuget\\packages\\microsoft.extensions.dependencyinjection.abstractions\\10.0.0\\microsoft.extensions.dependencyinjection.abstractions.10.0.0.nupkg.sha512"
   ],
   "logs": []
 }

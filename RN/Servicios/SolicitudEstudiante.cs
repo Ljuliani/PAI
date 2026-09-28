@@ -9,4 +9,6 @@ public sealed record SolicitudEstudiante(
     string Telefono,
     DateOnly? FechaEgresoSecundario,
     string TituloSecundario,
-    int PaisId);
+    int PaisId,
+    int CarreraId,
+    IReadOnlyList<int>? InformacionAcademicaIds = null);

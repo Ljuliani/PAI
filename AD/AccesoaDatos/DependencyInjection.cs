@@ -1,5 +1,6 @@
 using AccesoaDatos.Infrastructure;
 using AccesoaDatos.Repositories;
+using Administracion.Application;
 using Carreras.Application;
 using Estudiantes.Application;
 using Microsoft.Extensions.DependencyInjection;
@@ -19,6 +20,11 @@ public static class DependencyInjection
         services.AddScoped<IEstudianteRepository, EstudianteRepository>();
         services.AddScoped<ICarreraRepository, CarreraRepository>();
         services.AddScoped<IPaisRepository, PaisRepository>();
+        services.AddScoped<AdministracionRepository>();
+        services.AddScoped<Estudiantes.Application.IInformacionAcademicaRepository>(
+            serviceProvider => serviceProvider.GetRequiredService<AdministracionRepository>());
+        services.AddScoped<IAdministracionRepository>(
+            serviceProvider => serviceProvider.GetRequiredService<AdministracionRepository>());
         return services;
     }
 }

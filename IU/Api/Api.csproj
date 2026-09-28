@@ -23,6 +23,7 @@
     <Content Include="../Pages/Imagenes/banner.jpg" Link="wwwroot/estudiantes/Imagenes/banner.jpg" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
     <Content Include="../Pages/PaísesUI/index.html" Link="wwwroot/paises/index.html" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
     <Content Include="../Pages/PaísesUI/script/script.js" Link="wwwroot/paises/script/script.js" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
+    <Content Include="../Pages/AdministracionUI/**/*" Link="wwwroot/administracion/%(RecursiveDir)%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
   </ItemGroup>
 
 </Project>

@@ -4,6 +4,17 @@ document.addEventListener("DOMContentLoaded", () => {
     const submitButton = document.getElementById("guardarPais");
     const paisList = document.getElementById("listaPaises");
 
+    async function verificarSesion() {
+        const response = await fetch("/api/admin/sesion");
+        if (!response.ok) {
+            submitButton.disabled = true;
+            message.innerHTML = 'Para administrar países, <a href="/administracion/">iniciá sesión</a>.';
+            return;
+        }
+
+        submitButton.disabled = false;
+    }
+
     async function cargarPaises() {
         const response = await fetch("/api/paises");
         if (!response.ok) {
@@ -46,7 +57,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 })
             });
 
-            const result = await response.json();
+            const result = await response.json().catch(() => ({}));
             if (!response.ok) {
                 throw new Error(result.message || result.title || "No se pudo guardar el país.");
             }
@@ -61,7 +72,11 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 
-    cargarPaises().catch((error) => {
+    Promise.all([
+        cargarPaises(),
+        verificarSesion()
+    ]).catch((error) => {
+        submitButton.disabled = true;
         message.textContent = error.message;
     });
 });

@@ -9,6 +9,7 @@ public static class DependencyInjection
         services.AddScoped<IEstudianteService, EstudianteService>();
         services.AddScoped<ICarreraService, CarreraService>();
         services.AddScoped<IPaisService, PaisService>();
+        services.AddScoped<IAdministracionService, AdministracionService>();
         return services;
     }
 }

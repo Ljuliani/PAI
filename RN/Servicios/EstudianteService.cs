@@ -3,7 +3,9 @@ using Estudiantes.Domain;
 
 namespace Servicios;
 
-public sealed class EstudianteService(IEstudianteRepository estudiantes) : IEstudianteService
+public sealed class EstudianteService(
+    IEstudianteRepository estudiantes,
+    IInformacionAcademicaRepository informacionAcademica) : IEstudianteService
 {
     public async Task<int> AgregarAsync(
         SolicitudEstudiante solicitud,
@@ -25,13 +27,30 @@ public sealed class EstudianteService(IEstudianteRepository estudiantes) : IEstu
             PaisId = solicitud.PaisId
         };
 
-        return await estudiantes.AgregarAsync(estudiante, cancellationToken);
+        var informacionAcademicaIds = solicitud.InformacionAcademicaIds ?? [];
+        if (informacionAcademicaIds.Count == 0 ||
+            informacionAcademicaIds.Any(id => id <= 0) ||
+            informacionAcademicaIds.Distinct().Count() != informacionAcademicaIds.Count)
+        {
+            throw new ArgumentException("Seleccioná al menos una opción de información académica válida.", nameof(solicitud));
+        }
+
+        return await estudiantes.AgregarAsync(
+            estudiante,
+            solicitud.CarreraId,
+            informacionAcademicaIds,
+            cancellationToken);
     }
+
+    public Task<IReadOnlyList<InformacionAcademica>> ListarInformacionAcademicaAsync(
+        CancellationToken cancellationToken = default) =>
+        informacionAcademica.ListarHabilitadasAsync(cancellationToken);
 
     private static void ValidarSolicitud(SolicitudEstudiante solicitud)
     {
         if (solicitud.Dni <= 0 ||
             solicitud.PaisId <= 0 ||
+            solicitud.CarreraId <= 0 ||
             string.IsNullOrWhiteSpace(solicitud.ApellidosYNombres) ||
             string.IsNullOrWhiteSpace(solicitud.Correo) ||
             string.IsNullOrWhiteSpace(solicitud.Domicilio) ||
@@ -39,7 +58,7 @@ public sealed class EstudianteService(IEstudianteRepository estudiantes) : IEstu
             string.IsNullOrWhiteSpace(solicitud.TituloSecundario))
         {
             throw new ArgumentException(
-                "DNI, país y todos los datos personales requeridos deben ser válidos.",
+                "DNI, país, carrera y todos los datos personales requeridos deben ser válidos.",
                 nameof(solicitud));
         }
 

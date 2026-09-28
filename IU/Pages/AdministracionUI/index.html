@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Administración | PAI</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="script.js" defer></script>
+</head>
+<body>
+    <main class="container">
+        <header>
+            <a href="/estudiantes/" class="back-link">← Formulario de estudiantes</a>
+            <h1>Administración</h1>
+            <p>Habilitaciones, documentación académica y exportación de inscripciones.</p>
+        </header>
+
+        <section id="loginPanel" class="panel">
+            <h2>Iniciar sesión</h2>
+            <form id="loginForm">
+                <label for="usuario">Usuario</label>
+                <input id="usuario" name="usuario" maxlength="30" autocomplete="username" required>
+                <label for="contraseña">Contraseña</label>
+                <input id="contraseña" name="contraseña" type="password" maxlength="30" autocomplete="current-password" required>
+                <button type="submit">Ingresar</button>
+            </form>
+            <p id="loginMessage" class="message" role="status" aria-live="polite"></p>
+        </section>
+
+        <section id="adminPanel" hidden>
+            <div class="toolbar">
+                <span id="sessionUser"></span>
+                <button id="logoutButton" class="secondary" type="button">Cerrar sesión</button>
+            </div>
+
+            <nav aria-label="Secciones de administración">
+                <button type="button" data-section="habilitaciones" aria-current="page">Habilitaciones</button>
+                <button type="button" data-section="academica">Información académica</button>
+                <button type="button" data-section="exportacion">Listados y Excel</button>
+                <a class="nav-link" href="/paises/">Países</a>
+            </nav>
+
+            <section id="habilitaciones" class="panel admin-section">
+                <h2>Habilitaciones del formulario</h2>
+                <p>La vigencia para inscribirse se calcula a partir del rango de fechas. Al editar, se actualizan las fechas configuradas para ese año.</p>
+                <form id="habilitacionForm" class="form-grid">
+                    <input id="habilitacionId" type="hidden">
+                    <label>Año del formulario
+                        <input id="habilitacionAnio" type="number" min="2025" max="2100" required>
+                    </label>
+                    <label>Fecha de inicio
+                        <input id="habilitacionInicio" type="date" required>
+                    </label>
+                    <label>Fecha de cierre
+                        <input id="habilitacionCierre" type="date" required>
+                    </label>
+                    <div class="form-actions">
+                        <button type="submit">Guardar habilitación</button>
+                        <button id="cancelarHabilitacion" class="secondary" type="button" hidden>Cancelar edición</button>
+                    </div>
+                </form>
+                <p id="habilitacionesMessage" class="message" role="status" aria-live="polite"></p>
+                <div class="table-wrap">
+                    <table>
+                        <thead><tr><th>Año</th><th>Inicio</th><th>Cierre</th><th>Vigencia</th><th>Acciones</th></tr></thead>
+                        <tbody id="habilitacionesRows"></tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section id="academica" class="panel admin-section" hidden>
+                <h2>Información académica</h2>
+                <form id="academicaForm" class="form-grid">
+                    <input id="academicaId" type="hidden">
+                    <label>Descripción
+                        <input id="academicaDescripcion" maxlength="50" required>
+                    </label>
+                    <label>Fecha
+                        <input id="academicaFecha" type="date" required>
+                    </label>
+                    <label>Estado
+                        <select id="academicaEstado">
+                            <option value="DESHABILITADO">Deshabilitado</option>
+                            <option value="HABILITADO">Habilitado</option>
+                        </select>
+                    </label>
+                    <div class="form-actions">
+                        <button type="submit">Guardar opción</button>
+                        <button id="cancelarAcademica" class="secondary" type="button" hidden>Cancelar edición</button>
+                    </div>
+                </form>
+                <p id="academicaMessage" class="message" role="status" aria-live="polite"></p>
+                <div class="table-wrap">
+                    <table>
+                        <thead><tr><th>Descripción</th><th>Fecha</th><th>Estado</th><th>Acciones</th></tr></thead>
+                        <tbody id="academicaRows"></tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section id="exportacion" class="panel admin-section" hidden>
+                <h2>Estudiantes inscriptos</h2>
+                <p>El archivo contiene los campos que devuelve el procedimiento de exportación de la base de datos.</p>
+                <button id="exportButton" type="button">Descargar Excel</button>
+                <p id="exportMessage" class="message" role="status" aria-live="polite"></p>
+                <div class="table-wrap">
+                    <table>
+                        <thead><tr id="exportHeaders"></tr></thead>
+                        <tbody id="exportRows"></tbody>
+                    </table>
+                </div>
+            </section>
+        </section>
+    </main>
+</body>
+</html>
