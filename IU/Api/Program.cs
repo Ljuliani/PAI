@@ -13,7 +13,9 @@ var builder = WebApplication.CreateBuilder(new WebApplicationOptions
     WebRootPath = webRootPath
 });
 var connectionString = builder.Configuration.GetConnectionString("Sql")
-    ?? throw new InvalidOperationException("Falta configurar ConnectionStrings:Sql.");
+    ?? throw new InvalidOperationException(
+        "Falta configurar ConnectionStrings:Sql. En desarrollo local, usá User Secrets; "
+        + "en el servidor publicado, configurá la variable de entorno ConnectionStrings__Sql.");
 
 builder.Services.AddServicios();
 builder.Services.AddAccesoDatos(connectionString);
@@ -24,9 +26,7 @@ builder.Services
         options.Cookie.Name = "PAI.Admin";
         options.Cookie.HttpOnly = true;
         options.Cookie.SameSite = SameSiteMode.Strict;
-        options.Cookie.SecurePolicy = builder.Environment.IsDevelopment()
-            ? CookieSecurePolicy.SameAsRequest
-            : CookieSecurePolicy.Always;
+        options.Cookie.SecurePolicy = CookieSecurePolicy.SameAsRequest;
         options.ExpireTimeSpan = TimeSpan.FromHours(4);
         options.SlidingExpiration = true;
         options.Events.OnRedirectToLogin = context =>
